@@ -1,0 +1,8 @@
+AzureDiagnostics
+| where Resource contains "sb"
+| summarize
+    Active = max(ActiveMessageCount),
+    Oldest = max(EnqueuedTime)
+    by bin(TimeGenerated, 5m)
+| extend AgeMin = datetime_diff("minute", now(), Oldest)
+| where Active > 1000 and AgeMin > 15
