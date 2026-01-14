@@ -1,0 +1,7 @@
+AzureDiagnostics
+| where Resource contains "sb"
+| summarize
+    ActiveMessages = max(ActiveMessageCount),
+    OldestMessage = max(EnqueuedTime)
+    by bin(TimeGenerated, 5m)
+| extend QueueAgeMinutes = datetime_diff("minute", now(), OldestMessage)
