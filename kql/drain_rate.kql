@@ -1,0 +1,8 @@
+AzureDiagnostics
+| where Resource contains "sb"
+| where OperationName has "Send" or OperationName has "Complete"
+| summarize
+    Incoming = countif(OperationName has "Send"),
+    Completed = countif(OperationName has "Complete")
+    by bin(TimeGenerated, 5m)
+| extend DrainRatio = Completed * 1.0 / Incoming
